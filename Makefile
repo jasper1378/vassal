@@ -10,8 +10,10 @@ LINK_FLAGS :=
 RELEASE_LINK_FLAGS :=
 DEBUG_LINK_FLAGS :=
 SOURCE_DIRS := ./src
-INCLUDE_DIRS := $(SOURCE_DIRS)
+SUBMODULE_DIR := ./submodules
+INCLUDE_DIRS := $(SOURCE_DIRS) $(SUBMODULE_DIR)/libconfigfile/include $(SUBMODULE_DIR)/liblocket/include
 LIBRARIES :=
+SUBMODULE_OBJECTS := $(SUBMODULE_DIR)/libconfigfile/build/libconfigfile.a $(SUBMODULE_DIR)/liblocket/build/liblocket.a
 INSTALL_PATH := /usr/local/bin
 
 export BUILD_DIR := ./build
@@ -23,10 +25,7 @@ SHELL := /bin/bash
 INCLUDE_FLAGS := $(addprefix -I, $(shell find $(INCLUDE_DIRS) -type d))
 export CPPFLAGS := $(INCLUDE_FLAGS) -MMD -MP
 
-ifneq ($(LIBRARIES),)
-	COMPILE_FLAGS += $(shell pkg-config --cflags $(LIBRARIES))
-	LINK_FLAGS += $(shell pkg-config --libs $(LIBRARIES))
-endif
+LINK_FLAGS += $(addprefix -l, $(LIBRARIES))
 
 release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS) $(RELEASE_COMPILE_FLAGS)
 release: export LDFLAGS := $(LDFLAGS) $(LINK_FLAGS) $(RELEASE_LINK_FLAGS)
@@ -49,7 +48,7 @@ debug:
 all: $(BUILD_DIR)/$(BIN_NAME)
 
 $(BUILD_DIR)/$(BIN_NAME): $(OBJECTS)
-	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
+	$(CXX) $(OBJECTS) $(SUBMODULE_OBJECTS) $(LDFLAGS) -o $@
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	@mkdir -p $(dir $@)

@@ -1,6 +1,6 @@
 [submodule "locket"]
-	path = locket
+	path = submodules/locket
 	url = git@github.com:jasper1378/locket
 [submodule "libconfigfile"]
-	path = libconfigfile
+	path = submodules/libconfigfile
 	url = git@github.com:jasper1378/libconfigfile

@@ -3,12 +3,10 @@
 
 #include <mutex>
 
-namespace global
-{
-    namespace output_mutex
-    {
-        extern std::mutex output_mutex;
-    }
+namespace global {
+namespace output_mutex {
+extern std::mutex output_mutex;
 }
+} // namespace global
 
 #endif

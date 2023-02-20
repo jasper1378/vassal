@@ -5,17 +5,17 @@
 #include <iostream>
 #include <string>
 
-namespace misc
-{
-    std::string to_string(const std::chrono::year& year);
-    std::string to_string(const std::chrono::month& month);
-    std::string to_string(const std::chrono::day& day);
-    std::string to_string(const std::chrono::year_month_day& ymd);
+namespace misc {
+std::string to_string(const std::chrono::year &year);
+std::string to_string(const std::chrono::month &month);
+std::string to_string(const std::chrono::day &day);
+std::string to_string(const std::chrono::year_month_day &ymd);
 
-    std::ostream& operator<<(std::ostream& out, const std::chrono::year& year);
-    std::ostream& operator<<(std::ostream& out, const std::chrono::month& month);
-    std::ostream& operator<<(std::ostream& out, const std::chrono::day& day);
-    std::ostream& operator<<(std::ostream& out, const std::chrono::year_month_day& ymd);
-}
+std::ostream &operator<<(std::ostream &out, const std::chrono::year &year);
+std::ostream &operator<<(std::ostream &out, const std::chrono::month &month);
+std::ostream &operator<<(std::ostream &out, const std::chrono::day &day);
+std::ostream &operator<<(std::ostream &out,
+                         const std::chrono::year_month_day &ymd);
+} // namespace misc
 
 #endif

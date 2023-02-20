@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 
 namespace irc {
@@ -31,7 +32,7 @@ public:
                            const unknown_code_policy unknown_code_policy =
                                unknown_code_policy::RELAXED);
   numeric_message(const numeric_message &other);
-  numeric_message(numeric_message &&other);
+  numeric_message(numeric_message &&other) noexcept;
 
   virtual ~numeric_message() override;
 
@@ -50,7 +51,9 @@ public:
 
 public:
   numeric_message &operator=(const numeric_message &other);
-  numeric_message &operator=(numeric_message &&other);
+  numeric_message &operator=(numeric_message &&other) noexcept(
+      std::is_nothrow_move_assignable_v<message>
+          &&std::is_nothrow_move_assignable_v<std::string>);
 
 protected:
   virtual void print(std::ostream &out) const override;

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 irc::message::message() : m_sender_info{}, m_recipient{}, m_body{} {}
@@ -21,7 +22,7 @@ irc::message::message(const message &other)
     : m_sender_info{other.m_sender_info},
       m_recipient{other.m_recipient}, m_body{other.m_body} {}
 
-irc::message::message(message &&other)
+irc::message::message(message &&other) noexcept
     : m_sender_info{std::move(other.m_sender_info)},
       m_recipient{std::move(other.m_recipient)}, m_body{
                                                      std::move(other.m_body)} {}
@@ -63,7 +64,8 @@ irc::message &irc::message::operator=(const message &other) {
   return *this;
 }
 
-irc::message &irc::message::operator=(message &&other) {
+irc::message &irc::message::operator=(message &&other) noexcept(
+    std::is_nothrow_move_assignable_v<std::string>) {
   m_sender_info = std::move(other.m_sender_info);
   m_recipient = std::move(other.m_recipient);
   m_body = std::move(other.m_body);

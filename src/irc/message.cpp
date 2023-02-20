@@ -8,195 +8,160 @@
 #include <string>
 #include <utility>
 
-irc::message::message()
-    : m_sender_info{},
-      m_recipient{},
-      m_body{}
-{
+irc::message::message() : m_sender_info{}, m_recipient{}, m_body{} {}
+
+irc::message::message(const std::string &raw_message)
+    : m_sender_info{}, m_recipient{}, m_body{} {
+  parse_sender_info(raw_message);
+  parse_recipient(raw_message);
+  parse_body(raw_message);
 }
 
-irc::message::message(const std::string& raw_message)
-    : m_sender_info {},
-      m_recipient{},
-      m_body{}
-{
-    parse_sender_info(raw_message);
-    parse_recipient(raw_message);
-    parse_body(raw_message);
+irc::message::message(const message &other)
+    : m_sender_info{other.m_sender_info},
+      m_recipient{other.m_recipient}, m_body{other.m_body} {}
+
+irc::message::message(message &&other)
+    : m_sender_info{std::move(other.m_sender_info)},
+      m_recipient{std::move(other.m_recipient)}, m_body{
+                                                     std::move(other.m_body)} {}
+
+irc::message::~message() {}
+
+irc::message::sender_info irc::message::get_sender_info() const {
+  return m_sender_info;
 }
 
-irc::message::message(const message& other)
-    : m_sender_info{ other.m_sender_info },
-      m_recipient{ other.m_recipient },
-      m_body{ other.m_body }
-{
+std::string irc::message::get_recipient() const { return m_recipient; }
+
+std::string irc::message::get_body() const { return m_body; }
+
+irc::message::type irc::message::check_type(const std::string &raw_message) {
+  static constexpr std::string::size_type type_pos_word{2};
+  static constexpr char delimiter_space{' '};
+
+  std::string::size_type pos_last{std::string::npos};
+  std::string::size_type pos_cur{std::string::npos};
+
+  for (size_t i{0}; i < type_pos_word; ++i) {
+    pos_last = pos_cur;
+    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+  }
+
+  if (std::isdigit(raw_message[pos_last + 1]) == true) {
+    return type::NUMERIC;
+  } else {
+    return type::STANDARD;
+  }
 }
 
-irc::message::message(message&& other)
-    : m_sender_info{ std::move(other.m_sender_info) },
-      m_recipient{ std::move(other.m_recipient) },
-      m_body{ std::move(other.m_body) }
-{
-}
-
-irc::message::~message()
-{
-}
-
-irc::message::sender_info irc::message::get_sender_info() const
-{
-    return m_sender_info;
-}
-
-std::string irc::message::get_recipient() const
-{
-    return m_recipient;
-}
-
-std::string irc::message::get_body() const
-{
-    return m_body;
-}
-
-irc::message::type irc::message::check_type(const std::string& raw_message)
-{
-    static constexpr std::string::size_type type_pos_word{ 2 };
-    static constexpr char delimiter_space{ ' ' };
-
-    std::string::size_type pos_last{ std::string::npos };
-    std::string::size_type pos_cur{ std::string::npos };
-
-    for (size_t i{ 0 }; i < type_pos_word; ++i)
-    {
-        pos_last = pos_cur;
-        pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
-    }
-
-    if (std::isdigit(raw_message[pos_last + 1]) == true)
-    {
-        return type::NUMERIC;
-    }
-    else
-    {
-        return type::STANDARD;
-    }
-}
-
-irc::message& irc::message::operator=(const message& other)
-{
-    if (this == &other)
-    {
-        return *this;
-    }
-
-    m_sender_info = other.m_sender_info;
-    m_recipient = other.m_recipient;
-    m_body = other.m_body;
-
+irc::message &irc::message::operator=(const message &other) {
+  if (this == &other) {
     return *this;
+  }
+
+  m_sender_info = other.m_sender_info;
+  m_recipient = other.m_recipient;
+  m_body = other.m_body;
+
+  return *this;
 }
 
-irc::message& irc::message::operator=(message&& other)
-{
-    if (this == &other)
-    {
-        return *this;
-    }
-
-    m_sender_info = std::move(other.m_sender_info);
-    m_recipient = std::move(other.m_recipient);
-    m_body = std::move(other.m_body);
-
+irc::message &irc::message::operator=(message &&other) {
+  if (this == &other) {
     return *this;
+  }
+
+  m_sender_info = std::move(other.m_sender_info);
+  m_recipient = std::move(other.m_recipient);
+  m_body = std::move(other.m_body);
+
+  return *this;
 }
 
-void irc::message::print(std::ostream& out) const
-{
-    out << ':';
-    if (m_sender_info.sender_nick != "")
-    {
-        out << m_sender_info.sender_nick << '!';
-    }
-    if (m_sender_info.sender_user != "")
-    {
-        out << m_sender_info.sender_user << '@';
-    }
-    out<< m_sender_info.sender_host;
+void irc::message::print(std::ostream &out) const {
+  out << ':';
+  if (m_sender_info.sender_nick != "") {
+    out << m_sender_info.sender_nick << '!';
+  }
+  if (m_sender_info.sender_user != "") {
+    out << m_sender_info.sender_user << '@';
+  }
+  out << m_sender_info.sender_host;
 
-    out << ' ' << get_keyword();
+  out << ' ' << get_keyword();
 
-    out << ' ' << m_recipient;
+  out << ' ' << m_recipient;
 
-    out << ' ' << m_body;
+  out << ' ' << m_body;
 }
 
-void irc::message::parse_sender_info(const std::string& raw_message)
-{
-    static constexpr char delimiter_colon{ ':' };
-    static constexpr char delimiter_exclamation_mark{ '!' };
-    static constexpr char delimiter_at_sign{ '@' };
-    static constexpr char delimiter_space{' '};
+void irc::message::parse_sender_info(const std::string &raw_message) {
+  static constexpr char delimiter_colon{':'};
+  static constexpr char delimiter_exclamation_mark{'!'};
+  static constexpr char delimiter_at_sign{'@'};
+  static constexpr char delimiter_space{' '};
 
-    std::string sender_info_substr{ raw_message.substr(0, raw_message.find(delimiter_space)) };
+  std::string sender_info_substr{
+      raw_message.substr(0, raw_message.find(delimiter_space))};
 
-    const std::string::size_type pos_colon{ sender_info_substr.find(delimiter_colon) };
-    const std::string::size_type pos_exclamation_mark{ sender_info_substr.find(delimiter_exclamation_mark) };
-    const std::string::size_type pos_at_sign{ sender_info_substr.find(delimiter_at_sign) };
+  const std::string::size_type pos_colon{
+      sender_info_substr.find(delimiter_colon)};
+  const std::string::size_type pos_exclamation_mark{
+      sender_info_substr.find(delimiter_exclamation_mark)};
+  const std::string::size_type pos_at_sign{
+      sender_info_substr.find(delimiter_at_sign)};
 
-    if ((pos_exclamation_mark == std::string::npos) && (pos_at_sign == std::string::npos))
-    {
-        m_sender_info.sender_nick = "";
-        m_sender_info.sender_user = "";
-        m_sender_info.sender_host = sender_info_substr.substr((pos_colon + 1));
-    }
-    else if(!(pos_exclamation_mark == std::string::npos) != !(pos_at_sign == std::string::npos))
-    {
-        throw std::runtime_error{ "if message sender contains one of [nick,user], it should contain both" };
-    }
-    else
-    {
-        m_sender_info.sender_nick = sender_info_substr.substr((pos_colon + 1), (pos_exclamation_mark - (pos_colon + 1)));
-        m_sender_info.sender_user = sender_info_substr.substr((pos_exclamation_mark + 1), (pos_at_sign - (pos_exclamation_mark + 1)));
-        m_sender_info.sender_host = sender_info_substr.substr((pos_at_sign + 1));
-    }
+  if ((pos_exclamation_mark == std::string::npos) &&
+      (pos_at_sign == std::string::npos)) {
+    m_sender_info.sender_nick = "";
+    m_sender_info.sender_user = "";
+    m_sender_info.sender_host = sender_info_substr.substr((pos_colon + 1));
+  } else if (!(pos_exclamation_mark == std::string::npos) !=
+             !(pos_at_sign == std::string::npos)) {
+    throw std::runtime_error{"if message sender contains one of [nick,user], "
+                             "it should contain both"};
+  } else {
+    m_sender_info.sender_nick = sender_info_substr.substr(
+        (pos_colon + 1), (pos_exclamation_mark - (pos_colon + 1)));
+    m_sender_info.sender_user = sender_info_substr.substr(
+        (pos_exclamation_mark + 1), (pos_at_sign - (pos_exclamation_mark + 1)));
+    m_sender_info.sender_host = sender_info_substr.substr((pos_at_sign + 1));
+  }
 }
 
-void irc::message::parse_recipient(const std::string& raw_message)
-{
-    static constexpr std::string::size_type recipient_pos_word{ 3 };
-    static constexpr char delimiter_space{' '};
+void irc::message::parse_recipient(const std::string &raw_message) {
+  static constexpr std::string::size_type recipient_pos_word{3};
+  static constexpr char delimiter_space{' '};
 
-    std::string::size_type pos_last{ std::string::npos };
-    std::string::size_type pos_cur{ std::string::npos };
+  std::string::size_type pos_last{std::string::npos};
+  std::string::size_type pos_cur{std::string::npos};
 
-    for (size_t i{ 0 }; i < recipient_pos_word; ++i)
-    {
-        pos_last = pos_cur;
-        pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
-    }
+  for (size_t i{0}; i < recipient_pos_word; ++i) {
+    pos_last = pos_cur;
+    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+  }
 
-    m_recipient = raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1)));
+  m_recipient =
+      raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1)));
 }
 
-void irc::message::parse_body(const std::string& raw_message)
-{
-    static constexpr std::string::size_type body_pos_word{ 4 };
-    static constexpr char delimiter_space{ ' ' };
+void irc::message::parse_body(const std::string &raw_message) {
+  static constexpr std::string::size_type body_pos_word{4};
+  static constexpr char delimiter_space{' '};
 
-    std::string::size_type pos_last{ std::string::npos };
-    std::string::size_type pos_cur{ std::string::npos };
+  std::string::size_type pos_last{std::string::npos};
+  std::string::size_type pos_cur{std::string::npos};
 
-    for (size_t i{ 0 }; i < body_pos_word; ++i)
-    {
-        pos_last = pos_cur;
-        pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
-    }
+  for (size_t i{0}; i < body_pos_word; ++i) {
+    pos_last = pos_cur;
+    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+  }
 
-    m_body = raw_message.substr((pos_last + 1));
+  m_body = raw_message.substr((pos_last + 1));
 }
 
-std::ostream& irc::operator<<(std::ostream& out, const message& m)
-{
-    m.print(out);
-    return out;
+std::ostream &irc::operator<<(std::ostream &out, const message &m) {
+  m.print(out);
+  return out;
 }

@@ -106,7 +106,7 @@ public:
        liblocket::inet_socket_addr::ip_version ip_version =
            liblocket::inet_socket_addr::ip_version::IPv4,
        const std::string &server_password = "");
-  core(core &&other);
+  core(core &&other) /*TODO: noexcept()*/;
 
   core(const core &other) = delete;
 
@@ -220,7 +220,7 @@ public:
   void send_message_ison(const std::vector<std::string> &nicknames);
 
 public:
-  core &operator=(core &&other);
+  core &operator=(core &&other) /*TODO: noexcept()*/;
 
   core &operator=(const core &other) = delete;
 

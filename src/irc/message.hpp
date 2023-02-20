@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <type_traits>
 
 namespace irc {
 class message {
@@ -27,7 +28,7 @@ public:
   message();
   message(const std::string &raw_message);
   message(const message &other);
-  message(message &&other);
+  message(message &&other) noexcept;
 
   virtual ~message();
 
@@ -47,7 +48,8 @@ public:
 
 public:
   message &operator=(const message &other);
-  message &operator=(message &&other);
+  message &operator=(message &&other) noexcept(
+      std::is_nothrow_move_assignable_v<std::string>);
 
 public:
   friend std::ostream &operator<<(std::ostream &out, const message &m);

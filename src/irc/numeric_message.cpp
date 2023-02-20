@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <utility>
 
@@ -193,7 +194,7 @@ irc::numeric_message::numeric_message(const numeric_message &other)
       m_unknown_code_policy{other.m_unknown_code_policy},
       m_is_code_known{other.m_is_code_known} {}
 
-irc::numeric_message::numeric_message(numeric_message &&other)
+irc::numeric_message::numeric_message(numeric_message &&other) noexcept
     : message{std::move(other)}, m_code{std::move(other.m_code)},
       m_code_string{std::move(other.m_code_string)}, m_is_error{std::move(
                                                          other.m_is_error)},
@@ -245,7 +246,10 @@ irc::numeric_message::operator=(const numeric_message &other) {
   return *this;
 }
 
-irc::numeric_message &irc::numeric_message::operator=(numeric_message &&other) {
+irc::numeric_message &
+irc::numeric_message::operator=(numeric_message &&other) noexcept(
+    std::is_nothrow_move_assignable_v<message>
+        &&std::is_nothrow_move_assignable_v<std::string>) {
   message::operator=(std::move(other));
   m_code = std::move(other.m_code);
   m_code_string = std::move(other.m_code_string);

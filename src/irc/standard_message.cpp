@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 irc::standard_message::standard_message() : message{}, m_command{} {}
@@ -19,7 +20,7 @@ irc::standard_message::standard_message(const std::string &raw_message)
 irc::standard_message::standard_message(const standard_message &other)
     : message{other}, m_command{other.m_command} {}
 
-irc::standard_message::standard_message(standard_message &&other)
+irc::standard_message::standard_message(standard_message &&other) noexcept
     : message{std::move(other)}, m_command{std::move(other.m_command)} {}
 
 irc::standard_message::~standard_message() {}
@@ -49,7 +50,9 @@ irc::standard_message::operator=(const standard_message &other) {
 }
 
 irc::standard_message &
-irc::standard_message::operator=(standard_message &&other) {
+irc::standard_message::operator=(standard_message &&other) noexcept(
+    std::is_nothrow_move_assignable_v<message>
+        &&std::is_nothrow_move_assignable_v<std::string>) {
   message::operator=(std::move(other));
   m_command = std::move(other.m_command);
 

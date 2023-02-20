@@ -68,16 +68,12 @@ irc::core::~core() {
   m_listener_thread_kill_yourself = true;
   m_listener_thread.join();
 
-  if (m_server_address != nullptr) {
-    delete m_server_address;
-    m_server_address = nullptr;
-  }
+  delete m_server_address;
+  m_server_address = nullptr;
 
   for (size_t i{0}; i < m_unread_responses.size(); ++i) {
-    if (m_unread_responses[i] != nullptr) {
-      delete m_unread_responses[i];
-      m_unread_responses[i] = nullptr;
-    }
+    delete m_unread_responses[i];
+    m_unread_responses[i] = nullptr;
   }
 }
 
@@ -829,10 +825,8 @@ irc::core &irc::core::operator=(core &&other) {
     return *this;
   }
 
-  if (m_server_address != nullptr) {
-    delete m_server_address;
-    m_server_address = nullptr;
-  }
+  delete m_server_address;
+  m_server_address = nullptr;
   m_server_address = other.m_server_address;
   other.m_server_address = nullptr;
 
@@ -840,10 +834,8 @@ irc::core &irc::core::operator=(core &&other) {
   m_socket = std::move(other.m_socket);
 
   for (size_t i{0}; i < m_unread_responses.size(); ++i) {
-    if (m_unread_responses[i] != nullptr) {
-      delete m_unread_responses[i];
-      m_unread_responses[i] = nullptr;
-    }
+    delete m_unread_responses[i];
+    m_unread_responses[i] = nullptr;
   }
   m_unread_responses.resize(other.m_unread_responses.size(), nullptr);
   for (size_t i{0}; i < m_unread_responses.size(); ++i) {

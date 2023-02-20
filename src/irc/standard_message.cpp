@@ -42,10 +42,6 @@ std::string irc::standard_message::get_command() const { return m_command; }
 
 irc::standard_message &
 irc::standard_message::operator=(const standard_message &other) {
-  if (this == &other) {
-    return *this;
-  }
-
   message::operator=(other);
   m_command = other.m_command;
 
@@ -54,10 +50,6 @@ irc::standard_message::operator=(const standard_message &other) {
 
 irc::standard_message &
 irc::standard_message::operator=(standard_message &&other) {
-  if (this == &other) {
-    return *this;
-  }
-
   message::operator=(std::move(other));
   m_command = std::move(other.m_command);
 

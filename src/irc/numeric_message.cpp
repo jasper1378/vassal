@@ -235,10 +235,6 @@ bool irc::numeric_message::get_is_code_known() const { return m_is_code_known; }
 
 irc::numeric_message &
 irc::numeric_message::operator=(const numeric_message &other) {
-  if (this == &other) {
-    return *this;
-  }
-
   message::operator=(other);
   m_code = other.m_code;
   m_code_string = other.m_code_string;
@@ -250,10 +246,6 @@ irc::numeric_message::operator=(const numeric_message &other) {
 }
 
 irc::numeric_message &irc::numeric_message::operator=(numeric_message &&other) {
-  if (this == &other) {
-    return *this;
-  }
-
   message::operator=(std::move(other));
   m_code = std::move(other.m_code);
   m_code_string = std::move(other.m_code_string);

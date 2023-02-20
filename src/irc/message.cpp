@@ -56,10 +56,6 @@ irc::message::type irc::message::check_type(const std::string &raw_message) {
 }
 
 irc::message &irc::message::operator=(const message &other) {
-  if (this == &other) {
-    return *this;
-  }
-
   m_sender_info = other.m_sender_info;
   m_recipient = other.m_recipient;
   m_body = other.m_body;
@@ -68,10 +64,6 @@ irc::message &irc::message::operator=(const message &other) {
 }
 
 irc::message &irc::message::operator=(message &&other) {
-  if (this == &other) {
-    return *this;
-  }
-
   m_sender_info = std::move(other.m_sender_info);
   m_recipient = std::move(other.m_recipient);
   m_body = std::move(other.m_body);

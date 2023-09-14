@@ -2,6 +2,8 @@
 # GNU make is a picky little bugger who doesn't like spaces in his file paths
 
 BIN_NAME := vassal
+VERSION_MAJOR := 0
+VERSION_MINOR := 0
 CXX := g++
 COMPILE_FLAGS := -std=c++20 -Wall -Wextra -g
 RELEASE_COMPILE_FLAGS := -O2 -DNDEBUG
@@ -12,24 +14,27 @@ DEBUG_LINK_FLAGS :=
 SOURCE_DIRS := ./src
 SOURCE_FILE_EXT := .cpp
 SUBMODULE_DIR := ./submodules
-INCLUDE_DIRS := ./include $(wildcard $(SUBMODULE_DIR)/*/include)
+INCLUDE_DIRS := ./include
 HEADER_FILE_EXT := .hpp
 LIBRARIES :=
-SUBMODULE_OBJECTS := $(wildcard $(SUBMODULE_DIR)/*/build/*.a)
 INSTALL_PATH := /usr/local
 
-BIN_INSTALL_PATH := $(INSTALL_PATH)/bin
-
-export BUILD_DIR := ./build
+##########
 
 SHELL := /bin/bash
 
 .SUFFIXES:
 
-INCLUDE_FLAGS := $(addprefix -I, $(shell find $(INCLUDE_DIRS) -type d))
-export CPPFLAGS := $(INCLUDE_FLAGS) -MMD -MP
+export BUILD_DIR := ./build
 
+INCLUDE_DIRS += $(wildcard $(SUBMODULE_DIR)/*/include)
 LINK_FLAGS += $(addprefix -l, $(LIBRARIES))
+SUBMODULE_OBJECTS := $(wildcard $(SUBMODULE_DIR)/*/build/*.a)
+INCLUDE_FLAGS := $(addprefix -I, $(shell find $(INCLUDE_DIRS) -type d))
+
+BIN_INSTALL_PATH := $(INSTALL_PATH)/bin
+
+export CPPFLAGS := $(INCLUDE_FLAGS) -MMD -MP
 
 release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS) $(RELEASE_COMPILE_FLAGS)
 release: export LDFLAGS := $(LDFLAGS) $(LINK_FLAGS) $(RELEASE_LINK_FLAGS)

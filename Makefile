@@ -1,6 +1,3 @@
-# Remember:
-# GNU make is a picky little bugger who doesn't like spaces in his file paths
-
 BIN_NAME := vassal
 VERSION_MAJOR := 0
 VERSION_MINOR := 0
@@ -11,11 +8,11 @@ DEBUG_COMPILE_FLAGS := -Og -DDEBUG
 LINK_FLAGS :=
 RELEASE_LINK_FLAGS :=
 DEBUG_LINK_FLAGS :=
-SOURCE_DIRS := ./source
 SOURCE_FILE_EXT := .cpp
-SUBMODULE_DIR := ./submodules
-INCLUDE_DIRS := ./include
 HEADER_FILE_EXT := .hpp
+SOURCE_DIRS := ./source
+INCLUDE_DIRS := ./include
+SUBMODULE_DIR := ./submodules
 LIBRARIES :=
 INSTALL_PATH := /usr/local
 

@@ -8,12 +8,12 @@ DEBUG_COMPILE_FLAGS := -Og -DDEBUG
 LINK_FLAGS :=
 RELEASE_LINK_FLAGS :=
 DEBUG_LINK_FLAGS :=
+LIBRARIES :=
 SOURCE_FILE_EXT := .cpp
 HEADER_FILE_EXT := .hpp
 SOURCE_DIRS := ./source
 INCLUDE_DIRS := ./include
 SUBMODULE_DIR := ./submodules
-LIBRARIES :=
 INSTALL_PATH := /usr/local
 
 ##########
@@ -51,7 +51,13 @@ debug:
 	@$(MAKE) all --no-print-directory
 
 .PHONY: all
-all: $(BUILD_DIR)/$(BIN_NAME)
+all: _all
+
+.PHONY: _all
+_all: _build_executable
+
+.PHONY: _build_executable
+_build_executable : $(BUILD_DIR)/$(BIN_NAME)
 
 $(BUILD_DIR)/$(BIN_NAME): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(SUBMODULE_OBJECTS) $(LDFLAGS) -o $@
@@ -63,11 +69,17 @@ $(BUILD_DIR)/%$(SOURCE_FILE_EXT).o: %$(SOURCE_FILE_EXT)
 -include $(DEPENDENCIES)
 
 .PHONY: install
-install:
+install: _install_executable
+
+.PHONY: _install_executable
+_install_executable:
 	@install -v -Dm755 $(BUILD_DIR)/$(BIN_NAME) -t $(BIN_INSTALL_PATH)/
 
 .PHONY: uninstall
-uninstall:
+uninstall: _uninstall_executable
+
+.PHONY: _uninstall_executable
+_uninstall_executable:
 	@rm -v $(BIN_INSTALL_PATH)/$(BIN_NAME)
 
 .PHONY: clean

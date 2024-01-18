@@ -1,5 +1,5 @@
-#ifndef IRC_MESSAGE_HPP
-#define IRC_MESSAGE_HPP
+#ifndef VASSAL_IRC_MESSAGE_HPP
+#define VASSAL_IRC_MESSAGE_HPP
 
 #include <iostream>
 #include <string>

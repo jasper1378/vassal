@@ -1,5 +1,5 @@
-#ifndef TOML_DATE_TIME_FORMAT_PRINT_HPP
-#define TOML_DATE_TIME_FORMAT_PRINT_HPP
+#ifndef VASSAL_DATE_TIME_FORMAT_PRINT_HPP
+#define VASSAL_DATE_TIME_FORMAT_PRINT_HPP
 
 #include <chrono>
 #include <iostream>

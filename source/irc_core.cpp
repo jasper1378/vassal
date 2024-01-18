@@ -1,11 +1,11 @@
-#include "core.hpp"
+#include "irc_core.hpp"
 
-#include "message.hpp"
-#include "numeric_message.hpp"
-#include "standard_message.hpp"
+#include "irc_message.hpp"
+#include "irc_numeric_message.hpp"
+#include "irc_standard_message.hpp"
 
-#include "../global/color_codes.hpp"
-#include "../global/output_mutex.hpp"
+#include "color_codes.hpp"
+#include "output_mutex.hpp"
 
 #include "liblocket.hpp"
 
@@ -35,8 +35,8 @@ irc::core::core(const std::string &server_address, uint16_t port_num,
               : (static_cast<liblocket::inet_socket_addr *>(
                     new liblocket::inet6_socket_addr{server_address,
                                                      port_num})))},
-      m_nick{nick}, m_socket{liblocket::socket::dummy_type_connect{},
-                             m_server_address},
+      m_nick{nick},
+      m_socket{liblocket::socket::dummy_type_connect{}, m_server_address},
       m_unread_responses{}, m_new_unread_response{false}, m_listener_thread{},
       m_listener_thread_kill_yourself{false} {
   m_listener_thread = std::thread{&irc::core::listen, this};

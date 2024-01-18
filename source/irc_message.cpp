@@ -1,4 +1,4 @@
-#include "message.hpp"
+#include "irc_message.hpp"
 
 #include <cctype>
 #include <cstddef>
@@ -19,13 +19,13 @@ irc::message::message(const std::string &raw_message)
 }
 
 irc::message::message(const message &other)
-    : m_sender_info{other.m_sender_info},
-      m_recipient{other.m_recipient}, m_body{other.m_body} {}
+    : m_sender_info{other.m_sender_info}, m_recipient{other.m_recipient},
+      m_body{other.m_body} {}
 
 irc::message::message(message &&other) noexcept
     : m_sender_info{std::move(other.m_sender_info)},
-      m_recipient{std::move(other.m_recipient)}, m_body{
-                                                     std::move(other.m_body)} {}
+      m_recipient{std::move(other.m_recipient)},
+      m_body{std::move(other.m_body)} {}
 
 irc::message::~message() {}
 

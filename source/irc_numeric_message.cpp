@@ -1,6 +1,6 @@
-#include "numeric_message.hpp"
+#include "irc_numeric_message.hpp"
 
-#include "message.hpp"
+#include "irc_message.hpp"
 
 #include <cstddef>
 #include <exception>
@@ -196,8 +196,8 @@ irc::numeric_message::numeric_message(const numeric_message &other)
 
 irc::numeric_message::numeric_message(numeric_message &&other) noexcept
     : message{std::move(other)}, m_code{std::move(other.m_code)},
-      m_code_string{std::move(other.m_code_string)}, m_is_error{std::move(
-                                                         other.m_is_error)},
+      m_code_string{std::move(other.m_code_string)},
+      m_is_error{std::move(other.m_is_error)},
       m_unknown_code_policy{std::move(other.m_unknown_code_policy)},
       m_is_code_known{std::move(other.m_is_code_known)} {}
 

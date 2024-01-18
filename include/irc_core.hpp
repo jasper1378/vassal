@@ -1,5 +1,5 @@
-#ifndef IRC_CORE_HPP
-#define IRC_CORE_HPP
+#ifndef VASSAL_IRC_CORE_HPP
+#define VASSAL_IRC_CORE_HPP
 
 #include "message.hpp"
 #include "numeric_message.hpp"

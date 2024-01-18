@@ -1,9 +1,8 @@
-#ifndef GLOBAl_COLOR_CODES_HPP
-#define GLOBAL_COLOR_CODES_HPP
+#ifndef VASSAL_COLOR_CODES_HPP
+#define VASSAL_COLOR_CODES_HPP
 
 #include <string>
 
-namespace global {
 namespace color_codes {
 inline constexpr std::string foreground_black{"\033[30m"};
 inline constexpr std::string foreground_red{"\033[31m"};
@@ -31,6 +30,5 @@ inline constexpr std::string bold_off{"\033[21m"};
 inline constexpr std::string underline_off{"\033[24m"};
 inline constexpr std::string inverse_off{"\033[27m"};
 } // namespace color_codes
-} // namespace global
 
 #endif

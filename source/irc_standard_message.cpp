@@ -1,6 +1,6 @@
-#include "standard_message.hpp"
+#include "irc_standard_message.hpp"
 
-#include "message.hpp"
+#include "irc_message.hpp"
 
 #include <cstddef>
 #include <exception>

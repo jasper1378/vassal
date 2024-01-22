@@ -7,7 +7,7 @@
 #include "color_codes.hpp"
 #include "output_mutex.hpp"
 
-#include "liblocket.hpp"
+#include "liblocket/liblocket.hpp"
 
 #include <array>
 #include <atomic>

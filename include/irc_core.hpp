@@ -5,7 +5,7 @@
 #include "numeric_message.hpp"
 #include "standard_message.hpp"
 
-#include "liblocket.hpp"
+#include "liblocket/liblocket.hpp"
 
 #include <array>
 #include <atomic>

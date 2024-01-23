@@ -1,9 +1,9 @@
 #ifndef VASSAL_IRC_CORE_HPP
 #define VASSAL_IRC_CORE_HPP
 
-#include "message.hpp"
-#include "numeric_message.hpp"
-#include "standard_message.hpp"
+#include "irc_message.hpp"
+#include "irc_numeric_message.hpp"
+#include "irc_standard_message.hpp"
 
 #include "liblocket/liblocket.hpp"
 

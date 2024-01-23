@@ -6,12 +6,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 
 irc::message::message() : m_sender_info{}, m_recipient{}, m_body{} {}
 
-irc::message::message(const std::string &raw_message)
+irc::message::message(const std::string_view raw_message)
     : m_sender_info{}, m_recipient{}, m_body{} {
   parse_sender_info(raw_message);
   parse_recipient(raw_message);
@@ -37,7 +38,8 @@ std::string irc::message::get_recipient() const { return m_recipient; }
 
 std::string irc::message::get_body() const { return m_body; }
 
-irc::message::type irc::message::check_type(const std::string &raw_message) {
+irc::message::type
+irc::message::check_type(const std::string_view raw_message) {
   static constexpr std::string::size_type type_pos_word{2};
   static constexpr char delimiter_space{' '};
 
@@ -90,13 +92,13 @@ void irc::message::print(std::ostream &out) const {
   out << ' ' << m_body;
 }
 
-void irc::message::parse_sender_info(const std::string &raw_message) {
+void irc::message::parse_sender_info(const std::string_view raw_message) {
   static constexpr char delimiter_colon{':'};
   static constexpr char delimiter_exclamation_mark{'!'};
   static constexpr char delimiter_at_sign{'@'};
   static constexpr char delimiter_space{' '};
 
-  std::string sender_info_substr{
+  const std::string_view sender_info_substr{
       raw_message.substr(0, raw_message.find(delimiter_space))};
 
   const std::string::size_type pos_colon{
@@ -124,7 +126,7 @@ void irc::message::parse_sender_info(const std::string &raw_message) {
   }
 }
 
-void irc::message::parse_recipient(const std::string &raw_message) {
+void irc::message::parse_recipient(const std::string_view raw_message) {
   static constexpr std::string::size_type recipient_pos_word{3};
   static constexpr char delimiter_space{' '};
 
@@ -140,7 +142,7 @@ void irc::message::parse_recipient(const std::string &raw_message) {
       raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1)));
 }
 
-void irc::message::parse_body(const std::string &raw_message) {
+void irc::message::parse_body(const std::string_view raw_message) {
   static constexpr std::string::size_type body_pos_word{4};
   static constexpr char delimiter_space{' '};
 

@@ -7,12 +7,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 
 irc::standard_message::standard_message() : message{}, m_command{} {}
 
-irc::standard_message::standard_message(const std::string &raw_message)
+irc::standard_message::standard_message(const std::string_view raw_message)
     : message{raw_message}, m_command{} {
   parse_command(raw_message);
 }
@@ -63,7 +64,7 @@ void irc::standard_message::print(std::ostream &out) const {
   message::print(out);
 }
 
-void irc::standard_message::parse_command(const std::string &raw_message) {
+void irc::standard_message::parse_command(const std::string_view raw_message) {
   static constexpr std::string::size_type command_pos_word{2};
   static constexpr char delimiter_space{' '};
 

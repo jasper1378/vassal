@@ -1,10 +1,11 @@
 #ifndef VASSAL_IRC_STANDARD_MESSAGE_HPP
 #define VASSAL_IRC_STANDARD_MESSAGE_HPP
 
-#include "message.hpp"
+#include "irc_message.hpp"
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <type_traits>
 
 namespace irc {
@@ -14,7 +15,7 @@ private:
 
 public:
   standard_message();
-  explicit standard_message(const std::string &raw_message);
+  explicit standard_message(const std::string_view raw_message);
   standard_message(const standard_message &other);
   standard_message(standard_message &&other) noexcept;
 
@@ -39,7 +40,7 @@ protected:
   virtual void print(std::ostream &out) const override;
 
 private:
-  void parse_command(const std::string &raw_message);
+  void parse_command(const std::string_view raw_message);
 };
 } // namespace irc
 

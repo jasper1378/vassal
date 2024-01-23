@@ -868,10 +868,9 @@ void irc::core::listen() {
 #ifdef DEBUG
     {
       for (size_t i{0}; i < new_messages_raw.first.size(); ++i) {
-        std::cout << global::color_codes::foreground_yellow
+        std::cout << color_codes::foreground_yellow
                   << "[DEBUG]: [RECEIVED MESSAGE]: "
-                  << new_messages_raw.first[i] << global::color_codes::reset
-                  << '\n';
+                  << new_messages_raw.first[i] << color_codes::reset << '\n';
       }
     }
 #endif // DEBUG
@@ -931,11 +930,10 @@ void irc::core::send_message(const std::string &message) {
 
 #ifdef DEBUG
   {
-    std::unique_lock<std::mutex> output_mutex_lock{
-        global::output_mutex::output_mutex};
-    std::cerr << global::color_codes::foreground_red
-              << "[DEBUG]: [SENDING MESSAGE]: " << message
-              << global::color_codes::reset << '\n';
+    std::unique_lock<std::mutex> output_mutex_lock{output_mutex::output_mutex};
+    std::cerr << color_codes::foreground_red
+              << "[DEBUG]: [SENDING MESSAGE]: " << message << color_codes::reset
+              << '\n';
   }
 #endif // DEBUG
   m_socket.send(std::string{message + m_k_delimiter});

@@ -2,11 +2,13 @@
 
 #include "irc_message.hpp"
 
+#include <charconv>
 #include <cstddef>
 #include <exception>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
@@ -180,7 +182,7 @@ irc::numeric_message::numeric_message()
       m_unknown_code_policy{}, m_is_code_known{} {}
 
 irc::numeric_message::numeric_message(
-    const std::string &raw_message,
+    const std::string_view raw_message,
     const unknown_code_policy
         unknown_code_policy /*= unknown_code_policy::RELAXED*/)
     : message{raw_message}, m_code{}, m_code_string{}, m_is_error{},
@@ -264,7 +266,7 @@ void irc::numeric_message::print(std::ostream &out) const {
   message::print(out);
 }
 
-void irc::numeric_message::parse_code(const std::string &raw_message) {
+void irc::numeric_message::parse_code(const std::string_view raw_message) {
   static constexpr std::string::size_type code_pos_word{2};
   static constexpr char delimiter_space{' '};
 
@@ -276,8 +278,8 @@ void irc::numeric_message::parse_code(const std::string &raw_message) {
     pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
   }
 
-  m_code = std::stoi(
-      raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1))));
+  std::from_chars((raw_message.data() + pos_last + 1),
+                  (raw_message.data() + pos_cur), m_code);
 
   if (m_k_code_string_hash_table.contains(m_code) == false) {
     m_is_code_known = false;

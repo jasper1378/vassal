@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <type_traits>
 
 namespace irc {
@@ -26,7 +27,7 @@ private:
 
 public:
   message();
-  message(const std::string &raw_message);
+  message(const std::string_view raw_message);
   message(const message &other);
   message(message &&other) noexcept;
 
@@ -44,7 +45,7 @@ public:
   std::string get_body() const;
 
 public:
-  static type check_type(const std::string &raw_message);
+  static type check_type(const std::string_view raw_message);
 
 public:
   message &operator=(const message &other);
@@ -58,9 +59,9 @@ protected:
   virtual void print(std::ostream &out) const;
 
 private:
-  void parse_sender_info(const std::string &raw_message);
-  void parse_recipient(const std::string &raw_message);
-  void parse_body(const std::string &raw_message);
+  void parse_sender_info(const std::string_view raw_message);
+  void parse_recipient(const std::string_view raw_message);
+  void parse_body(const std::string_view raw_message);
 };
 
 std::ostream &operator<<(std::ostream &out, const message &m);

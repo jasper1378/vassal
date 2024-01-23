@@ -1,10 +1,11 @@
 #ifndef VASSAL_IRC_NUMERIC_MESSAGE_HPP
 #define VASSAL_IRC_NUMERIC_MESSAGE_HPP
 
-#include "message.hpp"
+#include "irc_message.hpp"
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 
@@ -28,7 +29,7 @@ private:
 
 public:
   numeric_message();
-  explicit numeric_message(const std::string &raw_message,
+  explicit numeric_message(const std::string_view raw_message,
                            const unknown_code_policy unknown_code_policy =
                                unknown_code_policy::RELAXED);
   numeric_message(const numeric_message &other);
@@ -59,7 +60,7 @@ protected:
   virtual void print(std::ostream &out) const override;
 
 private:
-  void parse_code(const std::string &raw_message);
+  void parse_code(const std::string_view raw_message);
 };
 } // namespace irc
 

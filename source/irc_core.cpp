@@ -39,7 +39,7 @@ vassal::irc::core::core(const std::string &server_address, uint16_t port_num,
       m_socket{liblocket::socket::dummy_type_connect{}, m_server_address},
       m_unread_responses{}, m_new_unread_response{false}, m_listener_thread{},
       m_listener_thread_kill_yourself{false} {
-  m_listener_thread = std::thread{&vassal::irc::core::listen, this};
+  m_listener_thread = std::thread{&irc::core::listen, this};
 
   if (server_password != "") {
     send_message_pass(server_password);

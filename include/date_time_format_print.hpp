@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+namespace vassal {
+
 namespace misc {
 std::string to_string(const std::chrono::year &year);
 std::string to_string(const std::chrono::month &month);
@@ -18,4 +20,5 @@ std::ostream &operator<<(std::ostream &out,
                          const std::chrono::year_month_day &ymd);
 } // namespace misc
 
+} // namespace vassal
 #endif

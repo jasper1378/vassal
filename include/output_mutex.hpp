@@ -3,8 +3,11 @@
 
 #include <mutex>
 
+namespace vassal {
+
 namespace output_mutex {
 extern std::mutex output_mutex;
 } // namespace output_mutex
 
+} // namespace vassal
 #endif

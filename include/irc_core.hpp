@@ -18,6 +18,8 @@
 #include <utility>
 #include <vector>
 
+namespace vassal {
+
 namespace irc {
 class core {
 public:
@@ -234,4 +236,5 @@ private:
 };
 } // namespace irc
 
+} // namespace vassal
 #endif

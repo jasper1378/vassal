@@ -8,6 +8,8 @@
 #include <string_view>
 #include <type_traits>
 
+namespace vassal {
+
 namespace irc {
 class standard_message : public message {
 private:
@@ -44,4 +46,5 @@ private:
 };
 } // namespace irc
 
+} // namespace vassal
 #endif

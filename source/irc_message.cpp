@@ -10,36 +10,37 @@
 #include <type_traits>
 #include <utility>
 
-irc::message::message() : m_sender_info{}, m_recipient{}, m_body{} {}
+vassal::irc::message::message() : m_sender_info{}, m_recipient{}, m_body{} {}
 
-irc::message::message(const std::string_view raw_message)
+vassal::irc::message::message(const std::string_view raw_message)
     : m_sender_info{}, m_recipient{}, m_body{} {
   parse_sender_info(raw_message);
   parse_recipient(raw_message);
   parse_body(raw_message);
 }
 
-irc::message::message(const message &other)
+vassal::irc::message::message(const message &other)
     : m_sender_info{other.m_sender_info}, m_recipient{other.m_recipient},
       m_body{other.m_body} {}
 
-irc::message::message(message &&other) noexcept
+vassal::irc::message::message(message &&other) noexcept
     : m_sender_info{std::move(other.m_sender_info)},
       m_recipient{std::move(other.m_recipient)},
       m_body{std::move(other.m_body)} {}
 
-irc::message::~message() {}
+vassal::irc::message::~message() {}
 
-irc::message::sender_info irc::message::get_sender_info() const {
+vassal::irc::message::sender_info
+vassal::irc::message::get_sender_info() const {
   return m_sender_info;
 }
 
-std::string irc::message::get_recipient() const { return m_recipient; }
+std::string vassal::irc::message::get_recipient() const { return m_recipient; }
 
-std::string irc::message::get_body() const { return m_body; }
+std::string vassal::irc::message::get_body() const { return m_body; }
 
-irc::message::type
-irc::message::check_type(const std::string_view raw_message) {
+vassal::irc::message::type
+vassal::irc::message::check_type(const std::string_view raw_message) {
   static constexpr std::string::size_type type_pos_word{2};
   static constexpr char delimiter_space{' '};
 
@@ -58,7 +59,7 @@ irc::message::check_type(const std::string_view raw_message) {
   }
 }
 
-irc::message &irc::message::operator=(const message &other) {
+vassal::irc::message &vassal::irc::message::operator=(const message &other) {
   m_sender_info = other.m_sender_info;
   m_recipient = other.m_recipient;
   m_body = other.m_body;
@@ -66,7 +67,7 @@ irc::message &irc::message::operator=(const message &other) {
   return *this;
 }
 
-irc::message &irc::message::operator=(message &&other) noexcept(
+vassal::irc::message &vassal::irc::message::operator=(message &&other) noexcept(
     std::is_nothrow_move_assignable_v<std::string>) {
   m_sender_info = std::move(other.m_sender_info);
   m_recipient = std::move(other.m_recipient);
@@ -75,7 +76,7 @@ irc::message &irc::message::operator=(message &&other) noexcept(
   return *this;
 }
 
-void irc::message::print(std::ostream &out) const {
+void vassal::irc::message::print(std::ostream &out) const {
   out << ':';
   if (m_sender_info.sender_nick != "") {
     out << m_sender_info.sender_nick << '!';
@@ -92,7 +93,8 @@ void irc::message::print(std::ostream &out) const {
   out << ' ' << m_body;
 }
 
-void irc::message::parse_sender_info(const std::string_view raw_message) {
+void vassal::irc::message::parse_sender_info(
+    const std::string_view raw_message) {
   static constexpr char delimiter_colon{':'};
   static constexpr char delimiter_exclamation_mark{'!'};
   static constexpr char delimiter_at_sign{'@'};
@@ -126,7 +128,7 @@ void irc::message::parse_sender_info(const std::string_view raw_message) {
   }
 }
 
-void irc::message::parse_recipient(const std::string_view raw_message) {
+void vassal::irc::message::parse_recipient(const std::string_view raw_message) {
   static constexpr std::string::size_type recipient_pos_word{3};
   static constexpr char delimiter_space{' '};
 
@@ -142,7 +144,7 @@ void irc::message::parse_recipient(const std::string_view raw_message) {
       raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1)));
 }
 
-void irc::message::parse_body(const std::string_view raw_message) {
+void vassal::irc::message::parse_body(const std::string_view raw_message) {
   static constexpr std::string::size_type body_pos_word{4};
   static constexpr char delimiter_space{' '};
 
@@ -157,7 +159,7 @@ void irc::message::parse_body(const std::string_view raw_message) {
   m_body = raw_message.substr((pos_last + 1));
 }
 
-std::ostream &irc::operator<<(std::ostream &out, const message &m) {
+std::ostream &vassal::irc::operator<<(std::ostream &out, const message &m) {
   m.print(out);
   return out;
 }

@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace vassal {
+
 namespace color_codes {
 inline constexpr std::string foreground_black{"\033[30m"};
 inline constexpr std::string foreground_red{"\033[31m"};
@@ -31,4 +33,5 @@ inline constexpr std::string underline_off{"\033[24m"};
 inline constexpr std::string inverse_off{"\033[27m"};
 } // namespace color_codes
 
+} // namespace vassal
 #endif

@@ -6,6 +6,8 @@
 #include <string_view>
 #include <type_traits>
 
+namespace vassal {
+
 namespace irc {
 class message {
 public:
@@ -67,4 +69,5 @@ private:
 std::ostream &operator<<(std::ostream &out, const message &m);
 } // namespace irc
 
+} // namespace vassal
 #endif

@@ -23,11 +23,11 @@
 #include <utility>
 #include <vector>
 
-irc::core::core(const std::string &server_address, uint16_t port_num,
-                const std::string &nick, const std::string &realname,
-                liblocket::inet_socket_addr::ip_version
-                    ip_version /*= inet_socket_addr::ip_version::IPv4*/,
-                const std::string &server_password /*= ""*/)
+vassal::irc::core::core(const std::string &server_address, uint16_t port_num,
+                        const std::string &nick, const std::string &realname,
+                        liblocket::inet_socket_addr::ip_version
+                            ip_version /*= inet_socket_addr::ip_version::IPv4*/,
+                        const std::string &server_password /*= ""*/)
     : m_server_address{(
           (ip_version == liblocket::inet_socket_addr::ip_version::IPv4)
               ? (static_cast<liblocket::inet_socket_addr *>(
@@ -39,7 +39,7 @@ irc::core::core(const std::string &server_address, uint16_t port_num,
       m_socket{liblocket::socket::dummy_type_connect{}, m_server_address},
       m_unread_responses{}, m_new_unread_response{false}, m_listener_thread{},
       m_listener_thread_kill_yourself{false} {
-  m_listener_thread = std::thread{&irc::core::listen, this};
+  m_listener_thread = std::thread{&vassal::irc::core::listen, this};
 
   if (server_password != "") {
     send_message_pass(server_password);
@@ -48,7 +48,7 @@ irc::core::core(const std::string &server_address, uint16_t port_num,
   send_message_user(nick, realname);
 }
 
-irc::core::core(core &&other)
+vassal::irc::core::core(core &&other)
     : m_server_address{other.m_server_address}, m_nick{std::move(other.m_nick)},
       m_socket{std::move(other.m_socket)}, m_unread_responses{},
       m_new_unread_response{std::move(other.m_new_unread_response.load())},
@@ -64,7 +64,7 @@ irc::core::core(core &&other)
   }
 }
 
-irc::core::~core() {
+vassal::irc::core::~core() {
   m_listener_thread_kill_yourself = true;
   m_listener_thread.join();
 
@@ -77,7 +77,7 @@ irc::core::~core() {
   }
 }
 
-irc::message *irc::core::recv_response() {
+vassal::irc::message *vassal::irc::core::recv_response() {
   while (true) {
     std::unique_lock<std::mutex> m_unread_responses_mutex_lock{
         m_unread_responses_mutex};
@@ -98,17 +98,17 @@ irc::message *irc::core::recv_response() {
   }
 }
 
-void irc::core::send_message_pass(const std::string &password) {
+void vassal::irc::core::send_message_pass(const std::string &password) {
   std::string message{std::string{"PASS "} + password};
   send_message(message);
 }
 
-void irc::core::send_message_nick(const std::string &nickname) {
+void vassal::irc::core::send_message_nick(const std::string &nickname) {
   std::string message{std::string{"NICK "} + nickname};
   send_message(message);
 }
 
-void irc::core::send_message_user(
+void vassal::irc::core::send_message_user(
     const std::string &username, const std::string &realname,
     const std::pair<user_mode, user_mode>
         modes /*= {user_mode::MAX, user_mode::MAX}*/) {
@@ -144,13 +144,13 @@ void irc::core::send_message_user(
   send_message(message);
 }
 
-void irc::core::send_message_oper(const std::string &name,
-                                  const std::string &password) {
+void vassal::irc::core::send_message_oper(const std::string &name,
+                                          const std::string &password) {
   std::string message{std::string{"OPER "} + name + " " + password};
   send_message(message);
 }
 
-void irc::core::send_message_user_mode(
+void vassal::irc::core::send_message_user_mode(
     const std::string &nickname, const user_mode mode /*= user_mode::MAX*/,
     const mode_operation operation /*= mode_operation::MAX*/) {
   if ((mode != user_mode::MAX) && (operation != mode_operation::MAX)) {
@@ -201,19 +201,19 @@ void irc::core::send_message_user_mode(
   }
 }
 
-void irc::core::send_message_quit(const std::string &quit_message) {
+void vassal::irc::core::send_message_quit(const std::string &quit_message) {
   std::string message{std::string{"QUIT :"} + quit_message};
   send_message(message);
 }
 
-void irc::core::send_message_squit(const std::string &server,
-                                   const std::string &comment) {
+void vassal::irc::core::send_message_squit(const std::string &server,
+                                           const std::string &comment) {
   std::string message{std::string{"SQUIT "} + server + " :" + comment};
   send_message(message);
 }
 
-void irc::core::send_message_join(const std::string &channel,
-                                  const std::string &key /*= ""*/) {
+void vassal::irc::core::send_message_join(const std::string &channel,
+                                          const std::string &key /*= ""*/) {
   std::string message{std::string{"JOIN "} + channel};
 
   if (key != "") {
@@ -224,7 +224,7 @@ void irc::core::send_message_join(const std::string &channel,
   send_message(message);
 }
 
-void irc::core::send_message_join(
+void vassal::irc::core::send_message_join(
     const std::vector<std::pair<std::string, std::string>> &channels_and_keys) {
   std::string message{"JOIN "};
 
@@ -247,8 +247,8 @@ void irc::core::send_message_join(
   send_message(message);
 }
 
-void irc::core::send_message_part(const std::string &channel,
-                                  const std::string &part_message /*= ""*/) {
+void vassal::irc::core::send_message_part(
+    const std::string &channel, const std::string &part_message /*= ""*/) {
   std::string message{std::string{"PART "} + channel};
 
   if (part_message != "") {
@@ -258,8 +258,9 @@ void irc::core::send_message_part(const std::string &channel,
   send_message(message);
 }
 
-void irc::core::send_message_part(const std::vector<std::string> &channels,
-                                  const std::string &part_message /*= ""*/) {
+void vassal::irc::core::send_message_part(
+    const std::vector<std::string> &channels,
+    const std::string &part_message /*= ""*/) {
   std::string message{"PART "};
 
   for (size_t i{0}; i < channels.size(); ++i) {
@@ -276,12 +277,12 @@ void irc::core::send_message_part(const std::vector<std::string> &channels,
   send_message(message);
 }
 
-void irc::core::send_message_part_all() {
+void vassal::irc::core::send_message_part_all() {
   std::string message{"JOIN 0"};
   send_message(message);
 }
 
-void irc::core::send_message_channel_mode(
+void vassal::irc::core::send_message_channel_mode(
     const std::string &channel, const channel_mode mode,
     const mode_operation operation /*= mode_operation::MAX*/,
     const std::string &options /*= ""*/) {
@@ -301,8 +302,8 @@ void irc::core::send_message_channel_mode(
   send_message(message);
 }
 
-void irc::core::send_message_topic(const std::string &channel,
-                                   const std::string &topic /*= ""*/) {
+void vassal::irc::core::send_message_topic(const std::string &channel,
+                                           const std::string &topic /*= ""*/) {
   std::string message{std::string{"TOPIC "} + channel};
 
   if (topic != "") {
@@ -312,8 +313,8 @@ void irc::core::send_message_topic(const std::string &channel,
   send_message(message);
 }
 
-void irc::core::send_message_names(const std::string &channel /*= ""*/,
-                                   const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_names(const std::string &channel /*= ""*/,
+                                           const std::string &target /*= ""*/) {
   std::string message{"NAMES"};
 
   if (channel != "") {
@@ -327,7 +328,7 @@ void irc::core::send_message_names(const std::string &channel /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_names(
+void vassal::irc::core::send_message_names(
     const std::vector<std::string> &channels /*= {}*/,
     const std::string &target /*= ""*/) {
   std::string message{"NAMES"};
@@ -351,8 +352,8 @@ void irc::core::send_message_names(
   send_message(message);
 }
 
-void irc::core::send_message_list(const std::string &channel /*= ""*/,
-                                  const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_list(const std::string &channel /*= ""*/,
+                                          const std::string &target /*= ""*/) {
   std::string message{"LIST"};
 
   if (channel != "") {
@@ -366,7 +367,7 @@ void irc::core::send_message_list(const std::string &channel /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_list(
+void vassal::irc::core::send_message_list(
     const std::vector<std::string> &channels /*= {}*/,
     const std::string &target /*= ""*/) {
   std::string message{"LIST"};
@@ -390,15 +391,15 @@ void irc::core::send_message_list(
   send_message(message);
 }
 
-void irc::core::send_message_invite(const std::string &nickname,
-                                    const std::string &channel) {
+void vassal::irc::core::send_message_invite(const std::string &nickname,
+                                            const std::string &channel) {
   std::string message{"INVITE " + nickname + " " + channel};
   send_message(message);
 }
 
-void irc::core::send_message_kick(const std::string &channel,
-                                  const std::string &user,
-                                  const std::string &comment /*= ""*/) {
+void vassal::irc::core::send_message_kick(const std::string &channel,
+                                          const std::string &user,
+                                          const std::string &comment /*= ""*/) {
   std::string message{"KICK " + channel + " " + user};
 
   if (comment != "") {
@@ -408,9 +409,9 @@ void irc::core::send_message_kick(const std::string &channel,
   send_message(message);
 }
 
-void irc::core::send_message_kick(const std::string &channel,
-                                  const std::vector<std::string> &users,
-                                  const std::string &comment /*= ""*/) {
+void vassal::irc::core::send_message_kick(const std::string &channel,
+                                          const std::vector<std::string> &users,
+                                          const std::string &comment /*= ""*/) {
   std::string message{"KICK " + channel + " "};
 
   for (size_t i{0}; i < users.size(); ++i) {
@@ -427,9 +428,10 @@ void irc::core::send_message_kick(const std::string &channel,
   send_message(message);
 }
 
-void irc::core::send_message_kick(const std::vector<std::string> &channels,
-                                  const std::vector<std::string> &users,
-                                  const std::string &comment /*= ""*/) {
+void vassal::irc::core::send_message_kick(
+    const std::vector<std::string> &channels,
+    const std::vector<std::string> &users,
+    const std::string &comment /*= ""*/) {
   if (channels.size() != users.size()) {
     throw std::runtime_error{"the number of channel parameters and user "
                              "parameters must be the same"};
@@ -460,21 +462,21 @@ void irc::core::send_message_kick(const std::vector<std::string> &channels,
   send_message(message);
 }
 
-void irc::core::send_message_privmsg(const std::string &receiver,
-                                     const std::string &text_to_be_sent) {
+void vassal::irc::core::send_message_privmsg(
+    const std::string &receiver, const std::string &text_to_be_sent) {
   std::string message{std::string{"PRIVMSG "} + receiver + " :" +
                       text_to_be_sent};
   send_message(message);
 }
 
-void irc::core::send_message_notice(const std::string &receiver,
-                                    const std::string &text_to_be_sent) {
+void vassal::irc::core::send_message_notice(
+    const std::string &receiver, const std::string &text_to_be_sent) {
   std::string message{std::string{"PRIVMSG "} + receiver + " :" +
                       text_to_be_sent};
   send_message(message);
 }
 
-void irc::core::send_message_motd(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_motd(const std::string &target /*= ""*/) {
   std::string message{"MOTD"};
 
   if (target != "") {
@@ -484,8 +486,8 @@ void irc::core::send_message_motd(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_lusers(const std::string &mask /*= ""*/,
-                                    const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_lusers(
+    const std::string &mask /*= ""*/, const std::string &target /*= ""*/) {
   std::string message{"LUSERS"};
 
   if (mask != "") {
@@ -499,7 +501,8 @@ void irc::core::send_message_lusers(const std::string &mask /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_version(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_version(
+    const std::string &target /*= ""*/) {
   std::string message{"VERSION"};
 
   if (target != "") {
@@ -509,8 +512,9 @@ void irc::core::send_message_version(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_stats(stats_query query /*= stats_query::MAX*/,
-                                   const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_stats(
+    stats_query query /*= stats_query::MAX*/,
+    const std::string &target /*= ""*/) {
   std::string message{"STATS"};
 
   if (query != stats_query::MAX) {
@@ -525,8 +529,9 @@ void irc::core::send_message_stats(stats_query query /*= stats_query::MAX*/,
   send_message(message);
 }
 
-void irc::core::send_message_links(const std::string &remote_server /*= ""*/,
-                                   const std::string &server_mask /*= ""*/) {
+void vassal::irc::core::send_message_links(
+    const std::string &remote_server /*= ""*/,
+    const std::string &server_mask /*= ""*/) {
   std::string message{"LINKS"};
 
   if (server_mask != "") {
@@ -540,7 +545,7 @@ void irc::core::send_message_links(const std::string &remote_server /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_time(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_time(const std::string &target /*= ""*/) {
   std::string message{"TIME"};
 
   if (target != "") {
@@ -550,7 +555,7 @@ void irc::core::send_message_time(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_connect(
+void vassal::irc::core::send_message_connect(
     const std::string &target_server, const std::string &port,
     const std::string &remote_server /*= ""*/) {
   std::string message{std::string{"CONNECT "} + target_server + " " + port};
@@ -562,7 +567,7 @@ void irc::core::send_message_connect(
   send_message(message);
 }
 
-void irc::core::send_message_trace(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_trace(const std::string &target /*= ""*/) {
   std::string message{"TRACE"};
 
   if (target != "") {
@@ -572,7 +577,7 @@ void irc::core::send_message_trace(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_admin(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_admin(const std::string &target /*= ""*/) {
   std::string message{"ADMIN"};
 
   if (target != "") {
@@ -582,7 +587,7 @@ void irc::core::send_message_admin(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_info(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_info(const std::string &target /*= ""*/) {
   std::string message{"INFO"};
 
   if (target != "") {
@@ -592,8 +597,8 @@ void irc::core::send_message_info(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_servlist(const std::string &mask /*= ""*/,
-                                      const std::string &type /*= ""*/) {
+void vassal::irc::core::send_message_servlist(
+    const std::string &mask /*= ""*/, const std::string &type /*= ""*/) {
   std::string message{"SERVLIST"};
 
   if (mask != "") {
@@ -607,14 +612,14 @@ void irc::core::send_message_servlist(const std::string &mask /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_squery(const std::string &service_name,
-                                    const std::string &text) {
+void vassal::irc::core::send_message_squery(const std::string &service_name,
+                                            const std::string &text) {
   std::string message{std::string{"SQUERY "} + service_name + " " + text};
   send_message(message);
 }
 
-void irc::core::send_message_who(const std::string &mask /*= ""*/,
-                                 bool only_opers /*= false*/) {
+void vassal::irc::core::send_message_who(const std::string &mask /*= ""*/,
+                                         bool only_opers /*= false*/) {
   std::string message{"WHO"};
 
   if (mask != "") {
@@ -628,8 +633,8 @@ void irc::core::send_message_who(const std::string &mask /*= ""*/,
   send_message(message);
 }
 
-void irc::core::send_message_whois(const std::string &mask,
-                                   const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_whois(const std::string &mask,
+                                           const std::string &target /*= ""*/) {
   std::string message{"WHOIS "};
 
   if (target != "") {
@@ -641,8 +646,8 @@ void irc::core::send_message_whois(const std::string &mask,
   send_message(message);
 }
 
-void irc::core::send_message_whois(const std::vector<std::string> &masks,
-                                   const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_whois(
+    const std::vector<std::string> &masks, const std::string &target /*= ""*/) {
   std::string message{"WHOIS "};
 
   if (target != "") {
@@ -660,9 +665,9 @@ void irc::core::send_message_whois(const std::vector<std::string> &masks,
   send_message(message);
 }
 
-void irc::core::send_message_whowas(const std::string &nickname,
-                                    const int count /*= -1*/,
-                                    const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_whowas(
+    const std::string &nickname, const int count /*= -1*/,
+    const std::string &target /*= ""*/) {
   std::string message{"WHOWAS " + nickname};
 
   if (count != -1) {
@@ -676,9 +681,9 @@ void irc::core::send_message_whowas(const std::string &nickname,
   send_message(message);
 }
 
-void irc::core::send_message_whowas(const std::vector<std::string> &nicknames,
-                                    const int count /*= -1*/,
-                                    const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_whowas(
+    const std::vector<std::string> &nicknames, const int count /*= -1*/,
+    const std::string &target /*= ""*/) {
   std::string message{"WHOWAS "};
 
   for (size_t i{0}; i < nicknames.size(); ++i) {
@@ -699,13 +704,14 @@ void irc::core::send_message_whowas(const std::vector<std::string> &nicknames,
   send_message(message);
 }
 
-void irc::core::send_message_kill(const std::string &nickname,
-                                  const std::string &comment) {
+void vassal::irc::core::send_message_kill(const std::string &nickname,
+                                          const std::string &comment) {
   std::string message{std::string{"KILL "} + nickname + " :" + comment};
   send_message(message);
 }
 
-bool irc::core::send_message_pong(const std::string &possible_ping_message) {
+bool vassal::irc::core::send_message_pong(
+    const std::string &possible_ping_message) {
   static const std::string ping{"PING"};
   static const std::string pong{"PONG"};
 
@@ -726,7 +732,7 @@ bool irc::core::send_message_pong(const std::string &possible_ping_message) {
   return false;
 }
 
-void irc::core::send_message_away(const std::string &text /*= ""*/) {
+void vassal::irc::core::send_message_away(const std::string &text /*= ""*/) {
   std::string message{"AWAY"};
 
   if (text != "") {
@@ -736,24 +742,24 @@ void irc::core::send_message_away(const std::string &text /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_rehash() {
+void vassal::irc::core::send_message_rehash() {
   std::string message{"REHASH"};
   send_message(message);
 }
 
-void irc::core::send_message_die() {
+void vassal::irc::core::send_message_die() {
   std::string message{"DIE"};
   send_message(message);
 }
 
-void irc::core::send_message_restart() {
+void vassal::irc::core::send_message_restart() {
   std::string message{"RESTART"};
   send_message(message);
 }
 
-void irc::core::send_message_summon(const std::string &user,
-                                    const std::string &target /*= ""*/,
-                                    const std::string &channel /*= ""*/) {
+void vassal::irc::core::send_message_summon(
+    const std::string &user, const std::string &target /*= ""*/,
+    const std::string &channel /*= ""*/) {
   std::string message{std::string{"MESSAGE "} + user};
 
   if (target != "") {
@@ -767,7 +773,7 @@ void irc::core::send_message_summon(const std::string &user,
   send_message(message);
 }
 
-void irc::core::send_message_users(const std::string &target /*= ""*/) {
+void vassal::irc::core::send_message_users(const std::string &target /*= ""*/) {
   std::string message{"USERS"};
 
   if (target != "") {
@@ -777,17 +783,17 @@ void irc::core::send_message_users(const std::string &target /*= ""*/) {
   send_message(message);
 }
 
-void irc::core::send_message_wallops(const std::string &text) {
+void vassal::irc::core::send_message_wallops(const std::string &text) {
   std::string message{"WALLOPS :" + text};
   send_message(message);
 }
 
-void irc::core::send_message_userhost(const std::string &nickname) {
+void vassal::irc::core::send_message_userhost(const std::string &nickname) {
   std::string message{std::string{"USERHOST "} + nickname};
   send_message(message);
 }
 
-void irc::core::send_message_userhost(
+void vassal::irc::core::send_message_userhost(
     const std::vector<std::string> &nicknames) {
   static constexpr size_t max_nick_list_size{5};
 
@@ -805,12 +811,13 @@ void irc::core::send_message_userhost(
   send_message(message);
 }
 
-void irc::core::send_message_ison(const std::string &nickname) {
+void vassal::irc::core::send_message_ison(const std::string &nickname) {
   std::string message{std::string{"ISON "} + nickname};
   send_message(message);
 }
 
-void irc::core::send_message_ison(const std::vector<std::string> &nicknames) {
+void vassal::irc::core::send_message_ison(
+    const std::vector<std::string> &nicknames) {
   std::string message{"ISON"};
 
   for (size_t i{0}; i < nicknames.size(); ++i) {
@@ -820,7 +827,7 @@ void irc::core::send_message_ison(const std::vector<std::string> &nicknames) {
   send_message(message);
 }
 
-irc::core &irc::core::operator=(core &&other) {
+vassal::irc::core &vassal::irc::core::operator=(core &&other) {
   if (this == &other) {
     return *this;
   }
@@ -852,7 +859,7 @@ irc::core &irc::core::operator=(core &&other) {
   return *this;
 }
 
-void irc::core::listen() {
+void vassal::irc::core::listen() {
   std::string message_fragment{""};
 
   while (m_listener_thread_kill_yourself == false) {
@@ -920,7 +927,7 @@ void irc::core::listen() {
   }
 }
 
-void irc::core::send_message(const std::string &message) {
+void vassal::irc::core::send_message(const std::string &message) {
   if (message.size() > m_k_max_message_length) {
     throw std::runtime_error{"message is too long (" +
                              std::to_string(message.size()) + " chars)"};
@@ -940,7 +947,7 @@ void irc::core::send_message(const std::string &message) {
 }
 
 std::pair<std::deque<std::string>, std::string>
-irc::core::split_messages(const std::string &messages_combined) {
+vassal::irc::core::split_messages(const std::string &messages_combined) {
   std::string message_fragment{""};
 
   if (messages_combined.ends_with(m_k_delimiter) == false) {

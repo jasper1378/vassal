@@ -2,4 +2,4 @@
 
 #include <mutex>
 
-std::mutex output_mutex::output_mutex;
+std::mutex vassal::output_mutex::output_mutex;

@@ -14,7 +14,7 @@
 #include <utility>
 
 const std::unordered_map<int, std::string>
-    irc::numeric_message::m_k_code_string_hash_table{
+    vassal::irc::numeric_message::m_k_code_string_hash_table{
         {001, "RPL_WELCOME"},
         {002, "RPL_YOURHOST"},
         {003, "RPL_CREATED"},
@@ -177,11 +177,11 @@ const std::unordered_map<int, std::string>
         {501, "ERR_UMODEUNKNOWNFLAG"},
         {502, "ERR_USERSDONTMATCH"}};
 
-irc::numeric_message::numeric_message()
+vassal::irc::numeric_message::numeric_message()
     : message{}, m_code{}, m_code_string{}, m_is_error{},
       m_unknown_code_policy{}, m_is_code_known{} {}
 
-irc::numeric_message::numeric_message(
+vassal::irc::numeric_message::numeric_message(
     const std::string_view raw_message,
     const unknown_code_policy
         unknown_code_policy /*= unknown_code_policy::RELAXED*/)
@@ -190,54 +190,57 @@ irc::numeric_message::numeric_message(
   parse_code(raw_message);
 }
 
-irc::numeric_message::numeric_message(const numeric_message &other)
+vassal::irc::numeric_message::numeric_message(const numeric_message &other)
     : message{other}, m_code{other.m_code}, m_code_string{other.m_code_string},
       m_is_error{other.m_is_error},
       m_unknown_code_policy{other.m_unknown_code_policy},
       m_is_code_known{other.m_is_code_known} {}
 
-irc::numeric_message::numeric_message(numeric_message &&other) noexcept
+vassal::irc::numeric_message::numeric_message(numeric_message &&other) noexcept
     : message{std::move(other)}, m_code{std::move(other.m_code)},
       m_code_string{std::move(other.m_code_string)},
       m_is_error{std::move(other.m_is_error)},
       m_unknown_code_policy{std::move(other.m_unknown_code_policy)},
       m_is_code_known{std::move(other.m_is_code_known)} {}
 
-irc::numeric_message::~numeric_message() {}
+vassal::irc::numeric_message::~numeric_message() {}
 
-irc::numeric_message *irc::numeric_message::create_new() const {
+vassal::irc::numeric_message *vassal::irc::numeric_message::create_new() const {
   return new numeric_message{};
 }
 
-irc::numeric_message *irc::numeric_message::create_clone() const {
+vassal::irc::numeric_message *
+vassal::irc::numeric_message::create_clone() const {
   return new numeric_message{*this};
 }
 
-irc::message::type irc::numeric_message::get_type() const {
+vassal::irc::message::type vassal::irc::numeric_message::get_type() const {
   return type::NUMERIC;
 }
 
-std::string irc::numeric_message::get_keyword() const {
+std::string vassal::irc::numeric_message::get_keyword() const {
   return std::to_string(m_code);
 }
 
-int irc::numeric_message::get_code() const { return m_code; }
+int vassal::irc::numeric_message::get_code() const { return m_code; }
 
-std::string irc::numeric_message::get_code_string() const {
+std::string vassal::irc::numeric_message::get_code_string() const {
   return m_code_string;
 }
 
-bool irc::numeric_message::get_is_error() const { return m_is_error; }
+bool vassal::irc::numeric_message::get_is_error() const { return m_is_error; }
 
-irc::numeric_message::unknown_code_policy
-irc::numeric_message::get_unknown_code_policy() const {
+vassal::irc::numeric_message::unknown_code_policy
+vassal::irc::numeric_message::get_unknown_code_policy() const {
   return m_unknown_code_policy;
 }
 
-bool irc::numeric_message::get_is_code_known() const { return m_is_code_known; }
+bool vassal::irc::numeric_message::get_is_code_known() const {
+  return m_is_code_known;
+}
 
-irc::numeric_message &
-irc::numeric_message::operator=(const numeric_message &other) {
+vassal::irc::numeric_message &
+vassal::irc::numeric_message::operator=(const numeric_message &other) {
   message::operator=(other);
   m_code = other.m_code;
   m_code_string = other.m_code_string;
@@ -248,8 +251,8 @@ irc::numeric_message::operator=(const numeric_message &other) {
   return *this;
 }
 
-irc::numeric_message &
-irc::numeric_message::operator=(numeric_message &&other) noexcept(
+vassal::irc::numeric_message &
+vassal::irc::numeric_message::operator=(numeric_message &&other) noexcept(
     std::is_nothrow_move_assignable_v<message>
         &&std::is_nothrow_move_assignable_v<std::string>) {
   message::operator=(std::move(other));
@@ -262,11 +265,12 @@ irc::numeric_message::operator=(numeric_message &&other) noexcept(
   return *this;
 }
 
-void irc::numeric_message::print(std::ostream &out) const {
+void vassal::irc::numeric_message::print(std::ostream &out) const {
   message::print(out);
 }
 
-void irc::numeric_message::parse_code(const std::string_view raw_message) {
+void vassal::irc::numeric_message::parse_code(
+    const std::string_view raw_message) {
   static constexpr std::string::size_type code_pos_word{2};
   static constexpr char delimiter_space{' '};
 

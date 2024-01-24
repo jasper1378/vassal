@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <unordered_map>
 
+namespace vassal {
+
 namespace irc {
 class numeric_message : public message {
 public:
@@ -64,4 +66,5 @@ private:
 };
 } // namespace irc
 
+} // namespace vassal
 #endif

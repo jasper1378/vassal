@@ -53,9 +53,9 @@ vassal::irc::message::check_type(const std::string_view raw_message) {
   }
 
   if (std::isdigit(raw_message[pos_last + 1]) == true) {
-    return type::NUMERIC;
+    return type::numeric;
   } else {
-    return type::STANDARD;
+    return type::standard;
   }
 }
 

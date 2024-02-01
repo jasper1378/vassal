@@ -184,7 +184,7 @@ vassal::irc::numeric_message::numeric_message()
 vassal::irc::numeric_message::numeric_message(
     const std::string_view raw_message,
     const unknown_code_policy
-        unknown_code_policy /*= unknown_code_policy::RELAXED*/)
+        unknown_code_policy /*= unknown_code_policy::relaxed*/)
     : message{raw_message}, m_code{}, m_code_string{}, m_is_error{},
       m_unknown_code_policy{unknown_code_policy}, m_is_code_known{} {
   parse_code(raw_message);
@@ -215,7 +215,7 @@ vassal::irc::numeric_message::create_clone() const {
 }
 
 vassal::irc::message::type vassal::irc::numeric_message::get_type() const {
-  return type::NUMERIC;
+  return type::numeric;
 }
 
 std::string vassal::irc::numeric_message::get_keyword() const {
@@ -289,10 +289,10 @@ void vassal::irc::numeric_message::parse_code(
     m_is_code_known = false;
 
     switch (m_unknown_code_policy) {
-    case unknown_code_policy::RELAXED:
+    case unknown_code_policy::relaxed:
       m_code_string = "";
       break;
-    case unknown_code_policy::STRICT:
+    case unknown_code_policy::strict:
       throw std::runtime_error{"message contains unknown numeric code " +
                                std::to_string(m_code)};
       break;
@@ -319,10 +319,10 @@ void vassal::irc::numeric_message::parse_code(
     m_is_error = false;
   } else {
     switch (m_unknown_code_policy) {
-    case unknown_code_policy::RELAXED:
+    case unknown_code_policy::relaxed:
       m_is_error = false;
       break;
-    case unknown_code_policy::STRICT:
+    case unknown_code_policy::strict:
       throw std::runtime_error{"message contains unknown numeric code " +
                                std::to_string(m_code)};
       break;

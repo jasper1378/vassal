@@ -15,8 +15,8 @@ namespace irc {
 class numeric_message : public message {
 public:
   enum class unknown_code_policy {
-    RELAXED,
-    STRICT,
+    relaxed,
+    strict,
   };
 
 private:
@@ -33,7 +33,7 @@ public:
   numeric_message();
   explicit numeric_message(const std::string_view raw_message,
                            const unknown_code_policy unknown_code_policy =
-                               unknown_code_policy::RELAXED);
+                               unknown_code_policy::relaxed);
   numeric_message(const numeric_message &other);
   numeric_message(numeric_message &&other) noexcept;
 

@@ -39,7 +39,7 @@ vassal::irc::standard_message::create_clone() const {
 }
 
 vassal::irc::message::type vassal::irc::standard_message::get_type() const {
-  return type::STANDARD;
+  return type::standard;
 }
 
 std::string vassal::irc::standard_message::get_keyword() const {

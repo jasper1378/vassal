@@ -12,8 +12,8 @@ namespace irc {
 class message {
 public:
   enum class type {
-    STANDARD,
-    NUMERIC,
+    standard,
+    numeric,
   };
 
   struct sender_info {

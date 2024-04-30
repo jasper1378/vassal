@@ -42,7 +42,7 @@ public:
     e,     // set/remove an exception mask to override a ban mask
     I,     // set/remove an invitation mask to automatically override the
            // invite-only flag
-    max,
+    N,
   };
 
   enum class user_mode {
@@ -53,13 +53,13 @@ public:
     o,     // operator flag
     O,     // local operator flag
     s,     // marks a user for receipt of server notices
-    max,
+    N,
   };
 
   enum class mode_operation {
     add = 0,
     remove,
-    max,
+    N,
   };
 
   enum class stats_query {
@@ -70,7 +70,7 @@ public:
        // commands for which the usage count is zero MAY be omitted
     o, // returns a list of configured privileged users, operators
     u, // returns a string showing how long the server has been up
-    max,
+    N,
   };
 
 private:
@@ -92,14 +92,14 @@ private:
   static constexpr int m_k_max_message_length{510};
   static constexpr std::string m_k_delimiter{"\r\n"};
 
-  static constexpr std::array<char, static_cast<size_t>(channel_mode::max)>
+  static constexpr std::array<char, static_cast<size_t>(channel_mode::N)>
       m_k_channel_mode_lut{'O', 'o', 'v', 'a', 'i', 'm', 'n', 'q', 'p',
                            's', 'r', 't', 'k', 'l', 'b', 'e', 'I'};
-  static constexpr std::array<char, static_cast<size_t>(user_mode::max)>
+  static constexpr std::array<char, static_cast<size_t>(user_mode::N)>
       m_k_user_mode_lut{'a', 'i', 'w', 'r', 'o', 'O', 's'};
-  static constexpr std::array<char, static_cast<size_t>(mode_operation::max)>
+  static constexpr std::array<char, static_cast<size_t>(mode_operation::N)>
       m_k_mode_operation_lut{'+', '-'};
-  static constexpr std::array<char, static_cast<size_t>(stats_query::max)>
+  static constexpr std::array<char, static_cast<size_t>(stats_query::N)>
       m_k_stats_query_lut{'l', 'm', 'o', 'u'};
 
 public:
@@ -122,12 +122,12 @@ public:
   void send_message_user(const std::string &username,
                          const std::string &realname,
                          const std::pair<user_mode, user_mode> modes = {
-                             user_mode::max, user_mode::max});
+                             user_mode::N, user_mode::N});
   void send_message_oper(const std::string &name, const std::string &password);
   void
   send_message_user_mode(const std::string &nickname,
-                         const user_mode mode = user_mode::max,
-                         const mode_operation operation = mode_operation::max);
+                         const user_mode mode = user_mode::N,
+                         const mode_operation operation = mode_operation::N);
   void send_message_quit(const std::string &quit_message);
   void send_message_squit(const std::string &server,
                           const std::string &comment);
@@ -141,10 +141,10 @@ public:
   void send_message_part(const std::string &channel,
                          const std::string &part_message = "");
   void send_message_part_all();
-  void send_message_channel_mode(
-      const std::string &channel, const channel_mode mode,
-      const mode_operation operation = mode_operation::max,
-      const std::string &options = "");
+  void
+  send_message_channel_mode(const std::string &channel, const channel_mode mode,
+                            const mode_operation operation = mode_operation::N,
+                            const std::string &options = "");
   void send_message_topic(const std::string &channel,
                           const std::string &topic = "");
   void send_message_names(const std::string &channel = "",
@@ -175,7 +175,7 @@ public:
   void send_message_lusers(const std::string &mask = "",
                            const std::string &target = "");
   void send_message_version(const std::string &target = "");
-  void send_message_stats(stats_query query = stats_query::max,
+  void send_message_stats(stats_query query = stats_query::N,
                           const std::string &target = "");
   void send_message_links(const std::string &remote_server = "",
                           const std::string &server_mask = "");

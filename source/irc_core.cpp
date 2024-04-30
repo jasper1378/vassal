@@ -111,7 +111,7 @@ void vassal::irc::core::send_message_nick(const std::string &nickname) {
 void vassal::irc::core::send_message_user(
     const std::string &username, const std::string &realname,
     const std::pair<user_mode, user_mode>
-        modes /*= {user_mode::max, user_mode::max}*/) {
+        modes /*= {user_mode::N, user_mode::N}*/) {
   std::string message{std::string{"USER "} + username + " "};
 
   static constexpr uint8_t bitmask_user_mode_i{0b1000};
@@ -120,7 +120,7 @@ void vassal::irc::core::send_message_user(
 
   auto set_bitmask{[=, &modes_bitmask](user_mode mode) -> void {
     switch (mode) {
-    case user_mode::max:
+    case user_mode::N:
       break;
     case user_mode::i:
       modes_bitmask |= bitmask_user_mode_i;
@@ -151,9 +151,9 @@ void vassal::irc::core::send_message_oper(const std::string &name,
 }
 
 void vassal::irc::core::send_message_user_mode(
-    const std::string &nickname, const user_mode mode /*= user_mode::max*/,
-    const mode_operation operation /*= mode_operation::max*/) {
-  if ((mode != user_mode::max) && (operation != mode_operation::max)) {
+    const std::string &nickname, const user_mode mode /*= user_mode::N*/,
+    const mode_operation operation /*= mode_operation::N*/) {
+  if ((mode != user_mode::N) && (operation != mode_operation::N)) {
     switch (mode) {
     case user_mode::a:
       throw std::runtime_error{
@@ -188,12 +188,12 @@ void vassal::irc::core::send_message_user_mode(
                         m_k_mode_operation_lut[static_cast<size_t>(operation)] +
                         m_k_user_mode_lut[static_cast<size_t>(mode)]};
     send_message(message);
-  } else if ((mode == user_mode::max) && (operation == mode_operation::max)) {
+  } else if ((mode == user_mode::N) && (operation == mode_operation::N)) {
     std::string message{std::string{"MODE "} + nickname};
     send_message(message);
-  } else if ((mode == user_mode::max) && (operation != mode_operation::max)) {
+  } else if ((mode == user_mode::N) && (operation != mode_operation::N)) {
     throw std::runtime_error{"mode is not specified"};
-  } else if ((mode != user_mode::max) && (operation == mode_operation::max)) {
+  } else if ((mode != user_mode::N) && (operation == mode_operation::N)) {
     throw std::runtime_error{"operation is not specified"};
   } else {
     throw std::runtime_error{
@@ -284,11 +284,11 @@ void vassal::irc::core::send_message_part_all() {
 
 void vassal::irc::core::send_message_channel_mode(
     const std::string &channel, const channel_mode mode,
-    const mode_operation operation /*= mode_operation::max*/,
+    const mode_operation operation /*= mode_operation::N*/,
     const std::string &options /*= ""*/) {
   std::string message{std::string{"MODE "} + channel};
 
-  if (operation != mode_operation::max) {
+  if (operation != mode_operation::N) {
     message.append(std::string{" "} +
                    m_k_mode_operation_lut[static_cast<size_t>(operation)]);
   }
@@ -513,11 +513,11 @@ void vassal::irc::core::send_message_version(
 }
 
 void vassal::irc::core::send_message_stats(
-    stats_query query /*= stats_query::max*/,
+    stats_query query /*= stats_query::N*/,
     const std::string &target /*= ""*/) {
   std::string message{"STATS"};
 
-  if (query != stats_query::max) {
+  if (query != stats_query::N) {
     message.append(std::string{" "} +
                    m_k_stats_query_lut[static_cast<size_t>(query)]);
 

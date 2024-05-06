@@ -41,15 +41,15 @@ std::string vassal::irc::message::get_body() const { return m_body; }
 
 vassal::irc::message::type
 vassal::irc::message::check_type(const std::string_view raw_message) {
-  static constexpr std::string::size_type type_pos_word{2};
-  static constexpr char delimiter_space{' '};
+  static constexpr std::string::size_type k_type_pos_word{2};
+  static constexpr char k_delimiter_space{' '};
 
   std::string::size_type pos_last{std::string::npos};
   std::string::size_type pos_cur{std::string::npos};
 
-  for (size_t i{0}; i < type_pos_word; ++i) {
+  for (size_t i{0}; i < k_type_pos_word; ++i) {
     pos_last = pos_cur;
-    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+    pos_cur = raw_message.find(k_delimiter_space, (pos_last + 1));
   }
 
   if (std::isdigit(raw_message[pos_last + 1]) == true) {
@@ -95,20 +95,20 @@ void vassal::irc::message::print(std::ostream &out) const {
 
 void vassal::irc::message::parse_sender_info(
     const std::string_view raw_message) {
-  static constexpr char delimiter_colon{':'};
-  static constexpr char delimiter_exclamation_mark{'!'};
-  static constexpr char delimiter_at_sign{'@'};
-  static constexpr char delimiter_space{' '};
+  static constexpr char k_delimiter_colon{':'};
+  static constexpr char k_delimiter_exclamation_mark{'!'};
+  static constexpr char k_delimiter_at_sign{'@'};
+  static constexpr char k_delimiter_space{' '};
 
   const std::string_view sender_info_substr{
-      raw_message.substr(0, raw_message.find(delimiter_space))};
+      raw_message.substr(0, raw_message.find(k_delimiter_space))};
 
   const std::string::size_type pos_colon{
-      sender_info_substr.find(delimiter_colon)};
+      sender_info_substr.find(k_delimiter_colon)};
   const std::string::size_type pos_exclamation_mark{
-      sender_info_substr.find(delimiter_exclamation_mark)};
+      sender_info_substr.find(k_delimiter_exclamation_mark)};
   const std::string::size_type pos_at_sign{
-      sender_info_substr.find(delimiter_at_sign)};
+      sender_info_substr.find(k_delimiter_at_sign)};
 
   if ((pos_exclamation_mark == std::string::npos) &&
       (pos_at_sign == std::string::npos)) {
@@ -129,15 +129,15 @@ void vassal::irc::message::parse_sender_info(
 }
 
 void vassal::irc::message::parse_recipient(const std::string_view raw_message) {
-  static constexpr std::string::size_type recipient_pos_word{3};
-  static constexpr char delimiter_space{' '};
+  static constexpr std::string::size_type k_recipient_pos_word{3};
+  static constexpr char k_delimiter_space{' '};
 
   std::string::size_type pos_last{std::string::npos};
   std::string::size_type pos_cur{std::string::npos};
 
-  for (size_t i{0}; i < recipient_pos_word; ++i) {
+  for (size_t i{0}; i < k_recipient_pos_word; ++i) {
     pos_last = pos_cur;
-    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+    pos_cur = raw_message.find(k_delimiter_space, (pos_last + 1));
   }
 
   m_recipient =
@@ -145,15 +145,15 @@ void vassal::irc::message::parse_recipient(const std::string_view raw_message) {
 }
 
 void vassal::irc::message::parse_body(const std::string_view raw_message) {
-  static constexpr std::string::size_type body_pos_word{4};
-  static constexpr char delimiter_space{' '};
+  static constexpr std::string::size_type k_body_pos_word{4};
+  static constexpr char k_delimiter_space{' '};
 
   std::string::size_type pos_last{std::string::npos};
   std::string::size_type pos_cur{std::string::npos};
 
-  for (size_t i{0}; i < body_pos_word; ++i) {
+  for (size_t i{0}; i < k_body_pos_word; ++i) {
     pos_last = pos_cur;
-    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+    pos_cur = raw_message.find(k_delimiter_space, (pos_last + 1));
   }
 
   m_body = raw_message.substr((pos_last + 1));

@@ -114,8 +114,8 @@ void vassal::irc::core::send_message_user(
         modes /*= {user_mode::N, user_mode::N}*/) {
   std::string message{std::string{"USER "} + username + " "};
 
-  static constexpr uint8_t bitmask_user_mode_i{0b1000};
-  static constexpr uint8_t bitmask_user_mode_w{0b0100};
+  static constexpr uint8_t k_bitmask_user_mode_i{0b1000};
+  static constexpr uint8_t k_bitmask_user_mode_w{0b0100};
   uint8_t modes_bitmask{0};
 
   auto set_bitmask{[=, &modes_bitmask](user_mode mode) -> void {
@@ -123,10 +123,10 @@ void vassal::irc::core::send_message_user(
     case user_mode::N:
       break;
     case user_mode::i:
-      modes_bitmask |= bitmask_user_mode_i;
+      modes_bitmask |= k_bitmask_user_mode_i;
       break;
     case user_mode::w:
-      modes_bitmask |= bitmask_user_mode_w;
+      modes_bitmask |= k_bitmask_user_mode_w;
       break;
     default:
       throw std::runtime_error{
@@ -712,16 +712,16 @@ void vassal::irc::core::send_message_kill(const std::string &nickname,
 
 bool vassal::irc::core::send_message_pong(
     const std::string &possible_ping_message) {
-  static const std::string ping{"PING"};
-  static const std::string pong{"PONG"};
+  static constexpr std::string k_ping{"PING"};
+  static constexpr std::string k_pong{"PONG"};
 
-  std::string::size_type pos{possible_ping_message.find(ping)};
+  std::string::size_type pos{possible_ping_message.find(k_ping)};
 
   if (pos != std::string::npos) {
-    if (possible_ping_message.find(std::string{ping + " :"}) !=
+    if (possible_ping_message.find(std::string{k_ping + " :"}) !=
         std::string::npos) {
-      std::string pong_response{pong};
-      pong_response.append(possible_ping_message.substr(pos + ping.size()));
+      std::string pong_response{k_pong};
+      pong_response.append(possible_ping_message.substr(pos + k_ping.size()));
 
       send_message(pong_response);
 
@@ -795,9 +795,9 @@ void vassal::irc::core::send_message_userhost(const std::string &nickname) {
 
 void vassal::irc::core::send_message_userhost(
     const std::vector<std::string> &nicknames) {
-  static constexpr size_t max_nick_list_size{5};
+  static constexpr size_t k_max_nick_list_size{5};
 
-  if (nicknames.size() > max_nick_list_size) {
+  if (nicknames.size() > k_max_nick_list_size) {
     throw std::runtime_error{
         "USERHOST can only accept a list of up to 5 nicknames"};
   }

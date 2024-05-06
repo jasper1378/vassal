@@ -60,8 +60,8 @@ vassal::irc::standard_message::operator=(const standard_message &other) {
 
 vassal::irc::standard_message &
 vassal::irc::standard_message::operator=(standard_message &&other) noexcept(
-    std::is_nothrow_move_assignable_v<message>
-        &&std::is_nothrow_move_assignable_v<std::string>) {
+    std::is_nothrow_move_assignable_v<message> &&
+    std::is_nothrow_move_assignable_v<std::string>) {
   message::operator=(std::move(other));
   m_command = std::move(other.m_command);
 
@@ -74,15 +74,15 @@ void vassal::irc::standard_message::print(std::ostream &out) const {
 
 void vassal::irc::standard_message::parse_command(
     const std::string_view raw_message) {
-  static constexpr std::string::size_type command_pos_word{2};
-  static constexpr char delimiter_space{' '};
+  static constexpr std::string::size_type k_command_pos_word{2};
+  static constexpr char k_delimiter_space{' '};
 
   std::string::size_type pos_last{std::string::npos};
   std::string::size_type pos_cur{std::string::npos};
 
-  for (size_t i{0}; i < command_pos_word; ++i) {
+  for (size_t i{0}; i < k_command_pos_word; ++i) {
     pos_last = pos_cur;
-    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+    pos_cur = raw_message.find(k_delimiter_space, (pos_last + 1));
   }
 
   m_command = raw_message.substr((pos_last + 1), ((pos_cur) - (pos_last + 1)));

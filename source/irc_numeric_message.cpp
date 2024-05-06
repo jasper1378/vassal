@@ -253,8 +253,8 @@ vassal::irc::numeric_message::operator=(const numeric_message &other) {
 
 vassal::irc::numeric_message &
 vassal::irc::numeric_message::operator=(numeric_message &&other) noexcept(
-    std::is_nothrow_move_assignable_v<message>
-        &&std::is_nothrow_move_assignable_v<std::string>) {
+    std::is_nothrow_move_assignable_v<message> &&
+    std::is_nothrow_move_assignable_v<std::string>) {
   message::operator=(std::move(other));
   m_code = std::move(other.m_code);
   m_code_string = std::move(other.m_code_string);
@@ -271,15 +271,15 @@ void vassal::irc::numeric_message::print(std::ostream &out) const {
 
 void vassal::irc::numeric_message::parse_code(
     const std::string_view raw_message) {
-  static constexpr std::string::size_type code_pos_word{2};
-  static constexpr char delimiter_space{' '};
+  static constexpr std::string::size_type k_code_pos_word{2};
+  static constexpr char k_delimiter_space{' '};
 
   std::string::size_type pos_last{std::string::npos};
   std::string::size_type pos_cur{std::string::npos};
 
-  for (size_t i{0}; i < code_pos_word; ++i) {
+  for (size_t i{0}; i < k_code_pos_word; ++i) {
     pos_last = pos_cur;
-    pos_cur = raw_message.find(delimiter_space, (pos_last + 1));
+    pos_cur = raw_message.find(k_delimiter_space, (pos_last + 1));
   }
 
   std::from_chars((raw_message.data() + pos_last + 1),
@@ -303,19 +303,19 @@ void vassal::irc::numeric_message::parse_code(
     m_code_string = m_k_code_string_hash_table.at(m_code);
   }
 
-  static constexpr int client_only_reply_range_start{1};
-  static constexpr int client_only_reply_range_end{99};
-  static constexpr int command_reply_range_start{200};
-  static constexpr int command_reply_range_end{399};
-  static constexpr int error_range_start{400};
-  static constexpr int error_range_end{599};
+  static constexpr int k_client_only_reply_range_start{1};
+  static constexpr int k_client_only_reply_range_end{99};
+  static constexpr int k_command_reply_range_start{200};
+  static constexpr int k_command_reply_range_end{399};
+  static constexpr int k_error_range_start{400};
+  static constexpr int k_error_range_end{599};
 
-  if ((m_code >= error_range_start) && (m_code <= error_range_end)) {
+  if ((m_code >= k_error_range_start) && (m_code <= k_error_range_end)) {
     m_is_error = true;
-  } else if (((m_code >= client_only_reply_range_start) &&
-              (m_code <= client_only_reply_range_end)) ||
-             ((m_code >= command_reply_range_start) &&
-              (m_code <= command_reply_range_end))) {
+  } else if (((m_code >= k_client_only_reply_range_start) &&
+              (m_code <= k_client_only_reply_range_end)) ||
+             ((m_code >= k_command_reply_range_start) &&
+              (m_code <= k_command_reply_range_end))) {
     m_is_error = false;
   } else {
     switch (m_unknown_code_policy) {

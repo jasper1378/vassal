@@ -7,6 +7,7 @@
 #include "color_codes.hpp"
 #include "output_mutex.hpp"
 
+#include "bits-and-bytes/unreachable_error.hpp"
 #include "liblocket/liblocket.hpp"
 
 #include <array>
@@ -196,8 +197,7 @@ void vassal::irc::core::send_message_user_mode(
   } else if ((mode != user_mode::N) && (operation == mode_operation::N)) {
     throw std::runtime_error{"operation is not specified"};
   } else {
-    throw std::runtime_error{
-        "this should be impossible... someone fucked up their boolean logic"};
+    throw bits_and_bytes::unreachable_error{};
   }
 }
 

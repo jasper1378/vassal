@@ -1,9 +1,9 @@
-[submodule "submodules/libconfigfile"]
-	path = submodules/libconfigfile
+[submodule "deps/libconfigfile"]
+	path = deps/libconfigfile
 	url = https://github.com/jasper1378/libconfigfile
-[submodule "submodules/liblocket"]
-	path = submodules/liblocket
+[submodule "deps/liblocket"]
+	path = deps/liblocket
 	url = https://github.com/jasper1378/liblocket
-[submodule "submodules/bits-and-bytes"]
-	path = submodules/bits-and-bytes
+[submodule "deps/bits-and-bytes"]
+	path = deps/bits-and-bytes
 	url = https://github.com/jasper1378/bits-and-bytes

@@ -34,6 +34,6 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 
 # Output files.
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile deps/Makefile src/Makefile])
 AC_CONFIG_SUBDIRS([deps/bits-and-bytes deps/libconfigfile deps/liblocket])
 AC_OUTPUT

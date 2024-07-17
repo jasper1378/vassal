@@ -2,7 +2,6 @@
 AC_PREREQ([2.72])
 AC_INIT([vassal], [0.0])
 AC_CONFIG_SRCDIR([src/main.cpp])
-AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.16.5 foreign tar-ustar -Wall -Werror])
 LT_PREREQ([2.5.0.14-9a4a-dirty])
@@ -34,6 +33,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 
 # Output files.
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile deps/Makefile src/Makefile])
 AC_CONFIG_SUBDIRS([deps/bits-and-bytes deps/libconfigfile deps/liblocket])
 AC_OUTPUT
